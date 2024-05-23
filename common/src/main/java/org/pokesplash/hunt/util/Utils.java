@@ -309,6 +309,11 @@ public abstract class Utils {
 	}
 
 	public static void runCommands(ArrayList<String> commands, ServerPlayer player, Pokemon pokemon, double price) {
+		if (commands == null) {
+			Hunt.LOGGER.error("Commands are null");
+			return;
+		}
+
 		// Run commands
 		CommandDispatcher<CommandSourceStack> dispatcher =
 				Hunt.server.getCommands().getDispatcher();
@@ -317,8 +322,9 @@ public abstract class Utils {
 				dispatcher.execute(
 						Utils.formatPlaceholders(command, player, pokemon, price),
 						Hunt.server.createCommandSourceStack());
-			} catch (CommandSyntaxException ex) {
-				throw new RuntimeException(ex);
+			} catch (Exception ex) {
+				Hunt.LOGGER.error("Error running command: " + command);
+				Hunt.LOGGER.error(ex.getMessage());
 			}
 		}
 	}
